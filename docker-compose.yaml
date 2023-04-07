@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+    app:
+        build: .
+        ports:
+            - ${DOCKER_WEB_PORT:-8000}:80
+        volumes:
+            - .:/var/www/html/
+        depends_on:
+            - db
+        networks:
+            - pageviewer
+
+    db:
+        image: mysql:5.7
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE:-pageviewer}
+            MYSQL_USER: ${DB_USER:-user}
+            MYSQL_PASSWORD: ${DB_PASSWORD:-password}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+        ports:
+            - ${DOCKER_DB_PORT:-3306}:3306
+        networks:
+            - pageviewer
+
+networks:
+    pageviewer:
+        name: pageviewer
+        driver: bridge
